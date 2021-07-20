@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
-import {LoginService} from '../../services/login.service'
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { LoginService } from '../../services/login.service'
 
 @Component({
   selector: 'app-login',
@@ -10,24 +11,44 @@ import {LoginService} from '../../services/login.service'
 export class LoginComponent implements OnInit {
 
   credentials: FormGroup;
+  errors: boolean = false;
+  spinner: boolean = false;
+  mensaje: string = "";
 
-  constructor(private loginService: LoginService) {
+  constructor(private loginService: LoginService, private router:Router) {
     this.credentials = new FormGroup({
-      username: new FormControl(""),
-      password: new FormControl("")
+      username: new FormControl('', [Validators.required, Validators.minLength(4)]),
+      password: new FormControl('', Validators.required)
     })
+
   }
 
 
   ngOnInit(): void {
   }
 
-  autenticate(){
-    this.loginService.login(this.credentials.value).subscribe(res=>{
-      localStorage.setItem("token", res.token);
-      console.log(res);
-    })
-    console.log(this.credentials.value);
+  autenticate() {
+    this.errors = false;
+    this.spinner = true;
+    if (this.credentials.valid) {
+      this.loginService.login(this.credentials.value).subscribe(res => {
+        if (res.error) {
+          this.mensaje = res.error
+          this.errors = true;
+        }
+        else {
+          localStorage.setItem("token", res.token);
+         this.router.navigate(['dashboard']);
+        }
+        this.spinner = false;
+      }, err => {
+        this.errors = true;
+        this.spinner = false;
+        if (err.status == 500)
+          this.mensaje = "El servidor no esta disponible, intentelo mas tarde!";
+      })
+    }
   }
 
+  
 }

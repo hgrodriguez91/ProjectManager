@@ -1,10 +1,10 @@
 .login{
-    border: 2px solid tomato;
+    /* border: 2px solid tomato; */
     border-radius: 3%;
     padding: 5%;
     width: 25%;
     margin-left: 35%;
-    margin-top: 10%;
+    margin-top: 2%;
     
 }
 mat-form-field{
@@ -14,3 +14,7 @@ mat-form-field{
 button{
     float: right;
 }
+.alert{
+color: red;
+}
+

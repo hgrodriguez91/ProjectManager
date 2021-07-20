@@ -1,20 +1,34 @@
-<div [formGroup]="credentials" class="login">
-    <h2>Acceder al Sistema</h2>
-    <mat-form-field appearance="outline">
-        <mat-label>Usuario</mat-label>
-        <input matInput placeholder="username" value="Sushi" formControlName="username">
-    </mat-form-field>
+<div class="login">
+    <form [formGroup]="credentials"  (ngSubmit)="autenticate()">
+        <h2>Acceder al Sistema</h2>
+        <div *ngIf="credentials.get('username')?.invalid && credentials.get('username')?.touched " class="alert">
+            Debe proporcionar un nombre de usuario
+            <span *ngIf="credentials.get('username')?.errors?.minlength"> mayor a
+                {{credentials.get('username')?.errors?.minlength.requiredLength}} caracteres</span>
+        </div>
+        <div *ngIf="errors" class="alert">
+            {{mensaje}}
+        </div>
+        <mat-form-field appearance="outline">
+            <mat-label>Usuario</mat-label>
+            <input matInput placeholder="username" formControlName="username">
+        </mat-form-field>
 
-    <mat-form-field appearance="outline">
-        <mat-label>Password</mat-label>
-        <input matInput type="password" formControlName="password" />
-    </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" formControlName="password" />
+        </mat-form-field>
 
-    <div>
-        <p><a href="#">Forgot password?</a></p>
+        <div>
+            <p><a href="#">Forgot password?</a></p>
+        </div>
+        <div>
+            <button mat-raised-button color="primary" type="submit" [disabled]="!credentials.valid">
+                Entrar
+            </button>
+        </div>
+    </form>
+    <div *ngIf="spinner"  >
+        <mat-spinner color="warn" diameter=30></mat-spinner>
     </div>
-    <div>
-        <button mat-raised-button color="primary" (click)="autenticate()">Entrar</button>
-    </div>
-
 </div>
